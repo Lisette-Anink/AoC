@@ -52,14 +52,13 @@ func check(e error) {
 	}
 }
 
-var sessionToken = envy.MustGet("session")
-
 // GetInputFromAoC get request directly from adventofcode
 func GetInputFromAoC(day string) []byte {
 	return ImportFromAoC("2020", day)
 }
 
 func ImportFromAoC(year, day string) []byte {
+	envy.Load("./../../.env")
 	filepath := fmt.Sprintf("input_%s_%s", year, day)
 	body := []byte{}
 	if _, err := os.Stat(filepath); errors.Is(err, os.ErrNotExist) {
@@ -67,6 +66,10 @@ func ImportFromAoC(year, day string) []byte {
 		req, err := http.NewRequest("GET", url, nil)
 		check(err)
 
+		sessionToken, err := envy.MustGet("session")
+		check(err)
+
+		// fmt.Println("call AoC ", sessionToken)
 		req.AddCookie(&http.Cookie{Name: "session", Value: sessionToken})
 
 		client := &http.Client{}
