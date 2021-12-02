@@ -7,15 +7,57 @@ import (
 	"lisette.anink/aoc/utils"
 )
 
-func TestMain(t *testing.T) {
+func TestCalPosition(t *testing.T) {
 	input := utils.ImportFileLines("test_input_2")
 	lines := utils.SplitInLines(input)
 	t.Logf("%v", lines)
 	{
-		assert.Equal(t, "abc", lines[0])
+		assert.Equal(t, "forward 5", lines[0])
 	}
-	t.Run("add first", func(t *testing.T) {
-		new := AddW(lines[1])
-		assert.Equal(t, "defw", new)
+	t.Run("test input", func(t *testing.T) {
+		h, d := calPosition(lines)
+		assert.Equal(t, 15, h)
+		assert.Equal(t, 10, d)
+	})
+}
+func TestPart1(t *testing.T) {
+	input := utils.ImportFromAoC("2021", "2")
+	lines := utils.SplitInLines(input)
+	// t.Logf("%v", lines)
+	{
+		assert.Equal(t, "forward 5", lines[0])
+	}
+	t.Run("test input", func(t *testing.T) {
+		h, d := calPosition(lines)
+		assert.Equal(t, 2003, h)
+		assert.Equal(t, 872, d)
+		assert.Equal(t, 10, d*h)
+	})
+}
+func TestCalPositionAim(t *testing.T) {
+	input := utils.ImportFileLines("test_input_2")
+	lines := utils.SplitInLines(input)
+	t.Logf("%v", lines)
+	{
+		assert.Equal(t, "forward 5", lines[0])
+	}
+	t.Run("test input", func(t *testing.T) {
+		h, d := calPositionAim(lines)
+		assert.Equal(t, 15, h)
+		assert.Equal(t, 60, d)
+	})
+}
+func TestPart2(t *testing.T) {
+	input := utils.ImportFromAoC("2021", "2")
+	lines := utils.SplitInLines(input)
+	// t.Logf("%v", lines)
+	{
+		assert.Equal(t, "forward 5", lines[0])
+	}
+	t.Run("test input", func(t *testing.T) {
+		h, d := calPositionAim(lines)
+		assert.Equal(t, 2003, h)
+		assert.Equal(t, 872, d)
+		assert.Equal(t, 10, d*h)
 	})
 }
