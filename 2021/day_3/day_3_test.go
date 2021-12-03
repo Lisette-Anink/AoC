@@ -72,23 +72,57 @@ func TestPart1(t *testing.T) {
 	})
 }
 
-// func TestCalPositionAim(t *testing.T) {
-// 	input := utils.ImportFileLines("test_input_2")
-// 	lines := utils.SplitInLines(input)
+// oxygen generator rating, determine the most common
+//CO2 scrubber rating, determine the least common
 
-// 	t.Run("test input", func(t *testing.T) {
-// 		h, d := calPositionAim(lines)
-// 		assert.Equal(t, 15, h)
-// 		assert.Equal(t, 60, d)
-// 	})
-// }
-// func TestPart2(t *testing.T) {
-// 	input := utils.ImportFromAoC("2021", "2")
-// 	lines := utils.SplitInLines(input)
-// 	t.Run("test input", func(t *testing.T) {
-// 		h, d := calPositionAim(lines)
-// 		assert.Equal(t, 2003, h)
-// 		assert.Equal(t, 869681, d)
-// 		assert.Equal(t, 1741971043, d*h)
-// 	})
-// }
+func TestFindAll(t *testing.T) {
+	in := []string{"001", "101", "000"}
+	want0 := []string{"001", "000"}
+	want1 := []string{"101"}
+	want2 := []string{"001", "101"}
+
+	t.Run("findall", func(t *testing.T) {
+		got0 := findAll(in, rune('0'), 0)
+		got1 := findAll(in, rune('1'), 0)
+		got2 := findAll(in, rune('1'), 2)
+		assert.Equal(t, want0, got0)
+		assert.Equal(t, want1, got1)
+		assert.Equal(t, want2, got2)
+	})
+}
+
+func TestFindOxCoRating(t *testing.T) {
+	input := utils.ImportFileLines("test_input_3")
+	lines := utils.SplitInLines(input)
+	{
+		assert.Equal(t, "00100", lines[0])
+	}
+	t.Run("test input", func(t *testing.T) {
+		o, c := findOxCoRating(lines)
+		assert.Equal(t, int64(23), o)
+		assert.Equal(t, int64(15), c)
+
+		assert.Equal(t, int64(230), c*o)
+	})
+}
+
+func Test_convertBinaryToInt(t *testing.T) {
+	type args struct {
+		binaryString string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int64
+	}{
+		{"1", args{"01010"}, 10},
+		{"1", args{"10111"}, 23},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := convertBinaryToInt(tt.args.binaryString); got != tt.want {
+				t.Errorf("convertBinaryToInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
