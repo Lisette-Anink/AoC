@@ -42,6 +42,13 @@ func TestLeastMost(t *testing.T) {
 		assert.Equal(t, wantLeast, l)
 		assert.Equal(t, wantMost, m)
 	})
+	t.Run("equal", func(t *testing.T) {
+		in := []string{"0", "0", "0", "1", "1", "1"}
+		wantLeast, wantMost := "0", "1"
+		l, m := leastMost(in)
+		assert.Equal(t, wantLeast, l)
+		assert.Equal(t, wantMost, m)
+	})
 }
 func TestFindGammaEps(t *testing.T) {
 	input := utils.ImportFileLines("test_input_3")
@@ -94,15 +101,26 @@ func TestFindAll(t *testing.T) {
 func TestFindOxCoRating(t *testing.T) {
 	input := utils.ImportFileLines("test_input_3")
 	lines := utils.SplitInLines(input)
-	{
-		assert.Equal(t, "00100", lines[0])
-	}
+
 	t.Run("test input", func(t *testing.T) {
 		o, c := findOxCoRating(lines)
 		assert.Equal(t, int64(23), o)
-		assert.Equal(t, int64(15), c)
+		assert.Equal(t, int64(10), c)
 
 		assert.Equal(t, int64(230), c*o)
+	})
+}
+
+func TestPart2(t *testing.T) {
+	input := utils.ImportFromAoC("2021", "3")
+	lines := utils.SplitInLines(input)
+
+	t.Run("test input", func(t *testing.T) {
+		o, c := findOxCoRating(lines)
+		assert.Equal(t, int64(3311), o)
+		assert.Equal(t, int64(851), c)
+
+		assert.Equal(t, int64(2817661), c*o)
 	})
 }
 
