@@ -8,10 +8,9 @@ import (
 )
 
 type board struct {
-	all      []string
-	rows     [][]string
-	cols     map[int][]string
-	hasBingo bool
+	all  []string
+	rows [][]string
+	cols map[int][]string
 }
 
 func playBingo(numbers []string, boards []board) int {
@@ -25,8 +24,7 @@ func playBingo(numbers []string, boards []board) int {
 			}
 		}
 	}
-	score := 0
-	return score
+	return 0
 }
 
 func playBingoWinLast(numbers []string, boards []board) int {
@@ -53,13 +51,11 @@ func parseInput(lines []string) ([]string, []board) {
 	numbers := strings.Split(lines[0], ",")
 	boards := []board{}
 	for _, boa := range lines[1:] {
-		b := board{hasBingo: false}
+		b := board{}
 		rows := strings.Split(boa, "\n")
 		for _, row := range rows {
 			if len(row) > 0 {
-				val := strings.ReplaceAll(strings.TrimSpace(row), "  ", " ")
-				vals := strings.Split(val, " ")
-
+				vals := strings.Fields(row)
 				b.rows = append(b.rows, vals)
 				b.all = append(b.all, vals...)
 			}
@@ -88,7 +84,7 @@ func (b *board) bingo(numbers []string) bool {
 
 func (b *board) score(numbers []string) int {
 	s := 0
-	rest := intersection(b.all, numbers)
+	rest := difference(b.all, numbers)
 	for _, n := range rest {
 		i, _ := strconv.Atoi(n)
 		s += i
@@ -112,7 +108,7 @@ func includesAll(collection, test []string) bool {
 	return false
 }
 
-func intersection(base, collection []string) []string {
+func difference(base, collection []string) []string {
 	for _, s := range collection {
 		for i, b := range base {
 			if s == b {
