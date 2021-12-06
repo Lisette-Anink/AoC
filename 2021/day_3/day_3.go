@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+const (
+	ox = "oxigenRating"
+	co = "CO2Rating"
+)
+
 func findGammaEps(numbers []string) (g int64, e int64) {
 	bits := splitInChars(numbers)
 	tr := transpose(bits)
@@ -20,8 +25,8 @@ func findGammaEps(numbers []string) (g int64, e int64) {
 }
 
 func findOxCoRating(numbers []string) (oxGen int64, coGen int64) {
-	oxGenRate := reduceArray(numbers, 0, "ox")
-	coGenRate := reduceArray(numbers, 0, "co")
+	oxGenRate := reduceArray(numbers, 0, ox)
+	coGenRate := reduceArray(numbers, 0, co)
 
 	oxGen = convertBinaryToInt(oxGenRate[0])
 	coGen = convertBinaryToInt(coGenRate[0])
@@ -38,12 +43,12 @@ func reduceArray(arr []string, testPos int, t string) []string {
 	return rest
 }
 
-func findLeastMostArr(arr []string, testPos int, t string) []string {
+func findLeastMostArr(arr []string, testPos int, t string) (rest []string) {
 	bits := splitInChars(arr)
 	tr := transpose(bits)
 	least, most := leastMost(tr[testPos])
-	rest := []string{}
-	if t == "ox" {
+
+	if t == ox {
 		rest = findAll(arr, []rune(most)[0], testPos)
 	} else {
 		rest = findAll(arr, []rune(least)[0], testPos)
