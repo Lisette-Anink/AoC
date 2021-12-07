@@ -5,6 +5,14 @@ import (
 	"strconv"
 )
 
+func ConvertBinaryToInt(binaryString string) int64 {
+	int, err := strconv.ParseInt(binaryString, 2, 0)
+	if err != nil {
+		panic(err)
+	}
+	return int
+}
+
 // ConvertToInt convert a slice of strings to slice of ints
 func ConvertToInt(lines []string) []int {
 	ar := []int{}
