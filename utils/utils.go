@@ -34,3 +34,42 @@ func Reverse(array []string) {
 		array[i], array[j] = array[j], array[i]
 	}
 }
+
+// Difference returns the diff base - substract of two
+// string slices
+func Difference(base, substract []string) []string {
+	basemap := map[string]bool{}
+	for _, e := range base {
+		basemap[e] = true
+	}
+
+	for _, s := range substract {
+		for k, _ := range basemap {
+			if s == k {
+				delete(basemap, k)
+			}
+		}
+	}
+	keys := make([]string, 0, len(basemap))
+	for k := range basemap {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+// returns true if collection contains all elements of test
+func IncludesAll(collection, test []string) bool {
+	total := len(test)
+	count := 0
+	for i := 0; i < len(collection); i++ {
+		for _, t := range test {
+			if t == collection[i] {
+				count++
+				if count == total {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
