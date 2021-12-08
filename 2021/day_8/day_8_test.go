@@ -141,17 +141,38 @@ func Test_identifyNumbers(t *testing.T) {
 
 func Test_Part2(t *testing.T) {
 	{
-		// data := useTestData()
-
-	}
-	{
 		data := example_in
 		in, out := parseInput(data)
 		all := in
 		all = append(all, out...)
-		// identifyNumbers(all)
 		iden := identifyNumbers(all)
 		val := valDigits(iden, out)
 		assert.Equal(t, 5353, val)
+	}
+	{
+		lines := useTestData()
+		total := 0
+		for _, l := range lines {
+			in, out := parseInput2(l)
+			all := in
+			all = append(all, out...)
+			iden := identifyNumbers(all)
+			val := valDigits(iden, out)
+			total += val
+		}
+		assert.Equal(t, 61229, total)
+	}
+	{
+		lines := useInputData()
+		total := 0
+		for _, l := range lines {
+			in, out := parseInput2(l)
+			all := in
+			all = append(all, out...)
+			iden := identifyNumbers(all)
+			val := valDigits(iden, out)
+			total += val
+		}
+		assert.Equal(t, 61229, total)
 	}
 }

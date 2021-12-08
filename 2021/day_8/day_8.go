@@ -1,6 +1,9 @@
 package day_8
 
 import (
+	"reflect"
+	"sort"
+	"strconv"
 	"strings"
 
 	"lisette.anink/aoc/utils"
@@ -13,6 +16,15 @@ func parseInput(lines []string) (inputDigits, outputDigits []string) {
 			inputDigits = append(inputDigits, strings.Fields(parts[0])...)
 			outputDigits = append(outputDigits, strings.Fields(parts[1])...)
 		}
+	}
+	return
+}
+
+func parseInput2(line string) (inputDigits, outputDigits []string) {
+	if len(line) > 0 {
+		parts := strings.Split(line, "|")
+		inputDigits = strings.Fields(parts[0])
+		outputDigits = strings.Fields(parts[1])
 	}
 	return
 }
@@ -33,62 +45,69 @@ func countNumbers(in []string) (count int) {
 	return
 }
 
-func identifyNumbers(in []string) (iden map[int][]string) {
+func identifyNumbers(in []string) (iden map[string][]string) {
 	inSplit := [][]string{}
 	for _, i := range in {
 		el := strings.Split(i, "")
 		inSplit = append(inSplit, el)
 	}
-	iden = map[int][]string{}
+	iden = map[string][]string{}
 	for _, i := range inSplit {
 		switch len(i) {
 		case 2: // 1
-			iden[1] = i
+			iden["1"] = i
 		case 3: // 7
-			iden[7] = i
+			iden["7"] = i
 		case 4: // 4
-			iden[4] = i
+			iden["4"] = i
 		case 7: // 8
-			iden[8] = i
+			iden["8"] = i
 		}
 	}
-	midTopLeft := utils.Difference(iden[4], iden[1])
+	midTopLeft := utils.Difference(iden["4"], iden["1"])
 	for _, i := range inSplit {
 		if len(i) == 6 {
-			if utils.IncludesAll(i, iden[4]) {
-				iden[9] = i
-			} else if utils.IncludesAll(i, iden[7]) {
-				iden[0] = i
+			if utils.IncludesAll(i, iden["4"]) {
+				iden["9"] = i
+			} else if utils.IncludesAll(i, iden["7"]) {
+				iden["0"] = i
 			} else {
-				iden[6] = i
+				iden["6"] = i
 			}
 		}
 		if len(i) == 5 {
-			if utils.IncludesAll(i, iden[7]) {
-				iden[3] = i
+			if utils.IncludesAll(i, iden["7"]) {
+				iden["3"] = i
 			} else if utils.IncludesAll(i, midTopLeft) {
-				iden[5] = i
+				iden["5"] = i
 			} else {
-				iden[2] = i
+				iden["2"] = i
 			}
 		}
 	}
 	return
 }
 
-func valDigits(iden map[int][]string, out []string) int {
-	val := 0
+func valDigits(iden map[string][]string, out []string) int {
+	val := ""
 	inSplit := [][]string{}
 	for _, i := range out {
 		el := strings.Split(i, "")
 		inSplit = append(inSplit, el)
 	}
-	for n, i := range inSplit {
+	for _, i := range inSplit {
 		for k, v := range iden {
-			if utils.IncludesAll(i, v) {
-				val += k * (10 ^ n)
+			if equal(v, i) {
+				val += k
 			}
 		}
 	}
-	return val
+	v, _ := strconv.Atoi(val)
+	return v
+}
+
+func equal(A, B []string) bool {
+	sort.Strings(A)
+	sort.Strings(B)
+	return reflect.DeepEqual(A, B)
 }
