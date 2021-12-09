@@ -1,7 +1,6 @@
 package day_8
 
 import (
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -107,7 +106,15 @@ func valDigits(iden map[string][]string, out []string) int {
 }
 
 func equal(A, B []string) bool {
+	if len(A) != len(B) {
+		return false
+	}
 	sort.Strings(A)
 	sort.Strings(B)
-	return reflect.DeepEqual(A, B)
+	for i, e := range A {
+		if e != B[i] {
+			return false
+		}
+	}
+	return true
 }

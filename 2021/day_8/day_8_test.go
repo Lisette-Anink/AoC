@@ -173,6 +173,6 @@ func Test_Part2(t *testing.T) {
 			val := valDigits(iden, out)
 			total += val
 		}
-		assert.Equal(t, 61229, total)
+		assert.Equal(t, 1091609, total)
 	}
 }
