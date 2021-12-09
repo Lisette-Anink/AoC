@@ -1,8 +1,11 @@
 package day_9
 
 import (
+	"sort"
 	"strconv"
 	"strings"
+
+	"lisette.anink/aoc/utils"
 )
 
 func parseInput(lines []string) map[[2]int]int {
@@ -46,73 +49,75 @@ func findLowPoints(floormap map[[2]int]int) int {
 			}
 		}
 		if lowest {
-			// fmt.Println(pos, val)
 			totalRisk += val + 1
 		}
 	}
 	return totalRisk
 }
 
-func findBasin(floormap map[[2]int]int) {
-	for pos, val := range floormap {
-		checkBasin(floormap, pos)
+func solvePart2(basinSizes map[int]int) int {
+	a := []int{}
+	for _, v := range basinSizes {
+		a = append(a, v)
 	}
-	// check if 9 skip
-	// check in basin
-	// no? put in basin /new
-	// check neighbours recursive
-	// del from floormap
+	sort.Ints(a)
+	utils.ReverseInt(a)
+
+	return utils.Product(a[:3])
 }
 
-func checkBasinNeighbours(floormap map[[2]int]int, pos [2]int, basinNr int) {
-	neighLeft := [2]int{pos[0] - 1, pos[1]}
-	if val, ok := floormap[neighLeft]; ok {
-		if val != 9 {
-			addToBasin(neighLeft, val, basinNr)
-			checkBasin(floormap, neighLeft)
-		}
+func findBasin(floormap map[[2]int]int) (basinSizes map[int]int) {
+	for pos := range floormap {
+		checkBasin(floormap, pos)
 	}
-	neighRight := [2]int{pos[0] + 1, pos[1]}
-	if val, ok := floormap[neighRight]; ok {
-		if val != 9 {
-			addToBasin(neighRight, val, basinNr)
-			checkBasin(floormap, neighRight)
-		}
+	basinSizes = map[int]int{}
+	for b, p := range basins {
+		basinSizes[b] = len(p)
 	}
-	neighTop := [2]int{pos[0], pos[1] - 1}
-	if val, ok := floormap[neighTop]; ok {
-		if val != 9 {
-			addToBasin(neighTop, val, basinNr)
-			checkBasin(floormap, neighTop)
-		}
-	}
-	neighBottom := [2]int{pos[0], pos[1] + 1}
-	if val, ok := floormap[neighBottom]; ok {
-		if val != 9 {
-			addToBasin(neighBottom, val, basinNr)
-			checkBasin(floormap, neighBottom)
-		}
-	}
+	return
 }
 
 func checkBasin(floormap map[[2]int]int, pos [2]int) {
 	if floormap[pos] != 9 {
 		nr := findBasinNr(pos)
-		if nr == 0 {
-			addToBasin(pos, floormap[pos], nr)
-		} else {
-			checkBasinNeighbours(floormap, pos, nr)
-		}
+		processPosition(floormap, pos, nr)
 	}
 	delete(floormap, pos)
 }
 
-func addToBasin(pos [2]int, val, nr int) {
-	if nr != 0 {
-		basins[nr] = append(basins[nr], pos)
+func processPosition(floormap map[[2]int]int, pos [2]int, basinNr int) {
+	if floormap[pos] != 9 {
+		if !contains(basins[basinNr], pos) {
+			addToBasin(pos, basinNr)
+		}
+		delete(floormap, pos)
+		checkBasinNeighbours(floormap, pos, basinNr)
 	} else {
-		basins[len(basins)+1] = [][2]int{pos}
+		delete(floormap, pos)
 	}
+}
+
+func checkBasinNeighbours(floormap map[[2]int]int, pos [2]int, basinNr int) {
+	neighLeft := [2]int{pos[0] - 1, pos[1]}
+	if _, ok := floormap[neighLeft]; ok {
+		processPosition(floormap, neighLeft, basinNr)
+	}
+	neighRight := [2]int{pos[0] + 1, pos[1]}
+	if _, ok := floormap[neighRight]; ok {
+		processPosition(floormap, neighRight, basinNr)
+	}
+	neighTop := [2]int{pos[0], pos[1] - 1}
+	if _, ok := floormap[neighTop]; ok {
+		processPosition(floormap, neighTop, basinNr)
+	}
+	neighBottom := [2]int{pos[0], pos[1] + 1}
+	if _, ok := floormap[neighBottom]; ok {
+		processPosition(floormap, neighBottom, basinNr)
+	}
+}
+
+func addToBasin(pos [2]int, nr int) {
+	basins[nr] = append(basins[nr], pos)
 }
 
 var basins = map[int][][2]int{}
@@ -123,6 +128,9 @@ func findBasinNr(pos [2]int) int {
 		if contains(b, pos) {
 			basinNr = x
 		}
+	}
+	if basinNr == 0 {
+		basinNr = len(basins) + 1
 	}
 	return basinNr
 }

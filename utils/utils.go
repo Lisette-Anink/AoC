@@ -73,3 +73,23 @@ func IncludesAll(collection, test []string) bool {
 	}
 	return false
 }
+
+func Sum(array []int) int {
+	result := 0
+	for _, v := range array {
+		result += v
+	}
+	return result
+}
+func Product(array []int) int {
+	result := array[0]
+	for _, v := range array[1:] {
+		result *= v
+	}
+	return result
+}
+func ReverseInt(array []int) {
+	for i, j := 0, len(array)-1; i < j; i, j = i+1, j-1 {
+		array[i], array[j] = array[j], array[i]
+	}
+}

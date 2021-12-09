@@ -53,3 +53,24 @@ func TestDifference(t *testing.T) {
 		})
 	}
 }
+
+func TestProduct(t *testing.T) {
+	type args struct {
+		array []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"test 1", args{[]int{2, 3}}, 6},
+		{"test 2", args{[]int{2, 3, 3}}, 18},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Product(tt.args.array); got != tt.want {
+				t.Errorf("Product() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
