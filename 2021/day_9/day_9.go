@@ -52,3 +52,12 @@ func findLowPoints(floormap map[[2]int]int) int {
 	}
 	return totalRisk
 }
+
+func findBasin(floormap map[[2]int]int) {
+	// for pos range floormap
+	// check if 9 skip
+	// check in basin
+	// no? put in basin /new
+	// check neighbours recursive
+	// del from floormap
+}
