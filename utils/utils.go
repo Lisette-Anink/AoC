@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func ConvertBinaryToInt(binaryString string) int64 {
@@ -92,4 +93,18 @@ func ReverseInt(array []int) {
 	for i, j := 0, len(array)-1; i < j; i, j = i+1, j-1 {
 		array[i], array[j] = array[j], array[i]
 	}
+}
+
+func ParseIntMap(lines []string) map[[2]int]int {
+	var intmap = map[[2]int]int{}
+	for x, line := range lines {
+		if len(line) > 0 {
+			parts := strings.Split(line, "")
+			for y, p := range parts {
+				i, _ := strconv.Atoi(p)
+				intmap[[2]int{x, y}] = i
+			}
+		}
+	}
+	return intmap
 }
