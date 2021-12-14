@@ -49,14 +49,54 @@ func parseInput(lines []string) (paper, []instruction) {
 	return newPaper, instructions
 }
 
-func foldPaper(p paper, inst instruction) {
+func (p *paper) fold(inst instruction) {
 	dots := p.Dots
 	if inst.direction == "x" {
-
-	} else {
-		for i := inst.coordinate + 1; i <= p.MaxY; i++ {
-
+		for x := inst.coordinate + 1; x <= p.MaxX; x++ {
+			// y =8  distance: 1 folded: 6
+			distanceX := x - inst.coordinate
+			foldedX := inst.coordinate - distanceX
+			for y := 0; y <= p.MaxX; y++ {
+				toFold := dots[[2]int{x, y}]
+				if toFold {
+					dots[[2]int{foldedX, y}] = toFold
+				}
+				delete(dots, [2]int{x, y})
+			}
 		}
+		p.MaxX = inst.coordinate - 1
+	} else {
+		for y := inst.coordinate + 1; y <= p.MaxY; y++ {
+			// y =8  distance: 1 folded: 6
+			distanceY := y - inst.coordinate
+			foldedY := inst.coordinate - distanceY
+			for x := 0; x <= p.MaxX; x++ {
+				toFold := dots[[2]int{x, y}]
+				// fmt.Println(x, y, toFold)
+				if toFold {
+					dots[[2]int{x, foldedY}] = toFold
+				}
+				delete(dots, [2]int{x, y})
+			}
+		}
+		p.MaxY = inst.coordinate - 1
 		//y
+	}
+	p.Dots = dots
+}
+
+func (p *paper) print() {
+	for y := 0; y <= p.MaxX; y++ {
+		for x := 0; x <= p.MaxX; x++ {
+			pos := [2]int{x, y}
+			if p.Dots[pos] {
+				fmt.Printf("#")
+			} else {
+				fmt.Printf(".")
+			}
+			if pos[0] == p.MaxX {
+				fmt.Println()
+			}
+		}
 	}
 }

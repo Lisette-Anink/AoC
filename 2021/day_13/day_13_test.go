@@ -43,3 +43,65 @@ func Test_parseInput(t *testing.T) {
 		})
 	}
 }
+
+var foldedPaper = paper{Dots: map[[2]int]bool{}, MaxX: 10, MaxY: 6}
+
+func Test_paper_fold(t *testing.T) {
+	type fields struct {
+		Dots map[[2]int]bool
+		MaxX int
+		MaxY int
+	}
+	type args struct {
+		inst instruction
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   paper
+	}{
+		{"test 1", fields{testDots.Dots, testDots.MaxX, testDots.MaxY}, args{instruction{direction: "y", coordinate: 7}}, foldedPaper},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := paper{
+				Dots: tt.fields.Dots,
+				MaxX: tt.fields.MaxX,
+				MaxY: tt.fields.MaxY,
+			}
+			p.fold(tt.args.inst)
+			p.print()
+			assert.Equal(t, tt.want, p)
+			assert.Equal(t, 17, len(p.Dots))
+		})
+	}
+}
+
+func Test_Part1(t *testing.T) {
+	data := useInputData()
+	pap, instr := parseInput(data)
+	pap.fold(instr[0])
+	assert.Equal(t, 684, len(pap.Dots))
+}
+
+func Test_Part2(t *testing.T) {
+	{
+		data := useTestData()
+		pap, instr := parseInput(data)
+		for _, i := range instr {
+			pap.fold(i)
+		}
+		pap.print()
+		assert.Equal(t, 1, len(pap.Dots))
+	}
+	{
+		data := useInputData()
+		pap, instr := parseInput(data)
+		for _, i := range instr {
+			pap.fold(i)
+		}
+		pap.print()
+		assert.Equal(t, 1, len(pap.Dots))
+	}
+}
