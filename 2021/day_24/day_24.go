@@ -16,17 +16,39 @@ type ALU struct {
 	z int
 }
 
+// start := 11921184999999 //287675
+// start := 11921173999999 //287675
+// start := 11921162999999 //287675
+// start := 11921151999999 //287675
+
 func MONADcalc(lines []string) int {
+	// start := 11927995976499 //425
+	// start := 11921195976499 //425
+	// start := 11921195979891 //11053
+	// start := 11921195979999 //287675
 	start := 99999999999999
-	for i := start; i > 99999999099990; i-- {
+
+	for i := start; i > 9999999999999; i -= 1 {
 		inputStr := strings.Split(fmt.Sprint(i), "")
 		input := utils.ConvertToInt(inputStr)
+		if skipInput(input) {
+			continue
+		}
 		valid := run(lines, input)
 		if valid {
 			return i
 		}
 	}
 	return 0
+}
+
+func skipInput(input []int) bool {
+	for _, v := range input {
+		if v == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func run(lines []string, input []int) bool {
@@ -53,7 +75,7 @@ func run(lines []string, input []int) bool {
 			}
 		}
 	}
-	// fmt.Println(*alu)
+	// fmt.Printf("%v\t\t%v\n", input, *alu)
 	return alu.z == 0
 }
 
