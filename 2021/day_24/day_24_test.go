@@ -2,6 +2,7 @@ package day_24
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"lisette.anink/aoc/utils"
@@ -271,9 +272,14 @@ func TestMONADcalc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			start := time.Now()
+
 			if got := MONADcalc(tt.args.lines); got != tt.want {
 				t.Errorf("MONADcalc() = %v, want %v", got, tt.want)
 			}
+			time := time.Now()
+			elapsed := time.Sub(start)
+			t.Logf("this took %v", elapsed)
 		})
 	}
 }
