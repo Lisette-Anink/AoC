@@ -4421,107 +4421,6 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
-
-
-// CREATE
-
-var _Regex_never = /.^/;
-
-var _Regex_fromStringWith = F2(function(options, string)
-{
-	var flags = 'g';
-	if (options.multiline) { flags += 'm'; }
-	if (options.caseInsensitive) { flags += 'i'; }
-
-	try
-	{
-		return $elm$core$Maybe$Just(new RegExp(string, flags));
-	}
-	catch(error)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-});
-
-
-// USE
-
-var _Regex_contains = F2(function(re, string)
-{
-	return string.match(re) !== null;
-});
-
-
-var _Regex_findAtMost = F3(function(n, re, str)
-{
-	var out = [];
-	var number = 0;
-	var string = str;
-	var lastIndex = re.lastIndex;
-	var prevLastIndex = -1;
-	var result;
-	while (number++ < n && (result = re.exec(string)))
-	{
-		if (prevLastIndex == re.lastIndex) break;
-		var i = result.length - 1;
-		var subs = new Array(i);
-		while (i > 0)
-		{
-			var submatch = result[i];
-			subs[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
-		prevLastIndex = re.lastIndex;
-	}
-	re.lastIndex = lastIndex;
-	return _List_fromArray(out);
-});
-
-
-var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
-{
-	var count = 0;
-	function jsReplacer(match)
-	{
-		if (count++ >= n)
-		{
-			return match;
-		}
-		var i = arguments.length - 3;
-		var submatches = new Array(i);
-		while (i > 0)
-		{
-			var submatch = arguments[i];
-			submatches[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
-	}
-	return string.replace(re, jsReplacer);
-});
-
-var _Regex_splitAtMost = F3(function(n, re, str)
-{
-	var string = str;
-	var out = [];
-	var start = re.lastIndex;
-	var restoreLastIndex = re.lastIndex;
-	while (n--)
-	{
-		var result = re.exec(string);
-		if (!result) break;
-		out.push(string.slice(start, result.index));
-		start = re.lastIndex;
-	}
-	out.push(string.slice(start));
-	re.lastIndex = restoreLastIndex;
-	return _List_fromArray(out);
-});
-
-var _Regex_infinity = Infinity;
 var $author$project$Day11$Main$init = 0;
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
@@ -11280,9 +11179,44 @@ var $mdgriffith$elm_ui$Element$el = F2(
 					[child])));
 	});
 var $elm$core$Debug$log = _Debug_log;
-var $author$project$Day11$Main$Monkey = F5(
-	function (items, operation, test, ifTrue, ifFalse) {
-		return {ifFalse: ifFalse, ifTrue: ifTrue, items: items, operation: operation, test: test};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm$core$List$sort = function (xs) {
+	return A2($elm$core$List$sortBy, $elm$core$Basics$identity, xs);
+};
+var $elm$core$Dict$values = function (dict) {
+	return A3(
+		$elm$core$Dict$foldr,
+		F3(
+			function (key, value, valueList) {
+				return A2($elm$core$List$cons, value, valueList);
+			}),
+		_List_Nil,
+		dict);
+};
+var $author$project$Day11$Main$highestInspectCount = function (monkeys) {
+	var vals = A2(
+		$elm$core$Debug$log,
+		'inspectCounts ',
+		$elm$core$List$reverse(
+			$elm$core$List$sort(
+				A2(
+					$elm$core$List$map,
+					function ($) {
+						return $.inspectCount;
+					},
+					$elm$core$Dict$values(monkeys)))));
+	if (vals.b && vals.b.b) {
+		var a = vals.a;
+		var _v1 = vals.b;
+		var b = _v1.a;
+		return a * b;
+	} else {
+		return 0;
+	}
+};
+var $author$project$Day11$Main$Monkey = F7(
+	function (nr, items, inspectCount, operation, test, ifTrue, ifFalse) {
+		return {ifFalse: ifFalse, ifTrue: ifTrue, inspectCount: inspectCount, items: items, nr: nr, operation: operation, test: test};
 	});
 var $elm$core$String$filter = _String_filter;
 var $elm$core$Dict$fromList = function (assocs) {
@@ -11309,52 +11243,19 @@ var $elm$core$String$lines = _String_lines;
 var $author$project$Day11$Main$Add = function (a) {
 	return {$: 'Add', a: a};
 };
-var $author$project$Day11$Main$MultiplySelf = {$: 'MultiplySelf'};
-var $elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var $elm$regex$Regex$find = _Regex_findAtMost(_Regex_infinity);
-var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var $elm$regex$Regex$fromString = function (string) {
-	return A2(
-		$elm$regex$Regex$fromStringWith,
-		{caseInsensitive: false, multiline: false},
-		string);
+var $author$project$Day11$Main$Multiply = function (a) {
+	return {$: 'Multiply', a: a};
 };
-var $elm$regex$Regex$never = _Regex_never;
+var $author$project$Day11$Main$MultiplySelf = {$: 'MultiplySelf'};
 var $author$project$Day11$Main$matchOperation = function (line) {
-	var r = A2(
+	var nr = A2(
 		$elm$core$Maybe$withDefault,
-		$elm$regex$Regex$never,
-		$elm$regex$Regex$fromString('.*(\\+|\\*).*(\\d+|old)'));
-	var submatches = A2(
-		$elm$core$List$map,
-		function (s) {
-			return A2(
-				$elm$core$Debug$log,
-				'subm',
-				function ($) {
-					return $.submatches;
-				}(s));
-		},
-		A2(
-			$elm$regex$Regex$find,
-			r,
-			A2($elm$core$Debug$log, 'l: ', line)));
-	if (submatches.b) {
-		var sign = submatches.a;
-		var lm = A2($elm$core$List$filterMap, $elm$core$Basics$identity, sign);
-		var l = A2($elm$core$List$filterMap, $elm$core$Basics$identity, sign);
-		if (l.b) {
-			var a = l.a;
-			return (a === '+') ? A3($elm$core$Debug$log, 'IS +', $author$project$Day11$Main$Add, 0) : A2($elm$core$Debug$log, 'IS *', $author$project$Day11$Main$MultiplySelf);
-		} else {
-			return A2($elm$core$Debug$log, 'NoSign !!', $author$project$Day11$Main$MultiplySelf);
-		}
-	} else {
-		return A2($elm$core$Debug$log, 'THIS SHOULD NOT HAPPEN!', $author$project$Day11$Main$MultiplySelf);
-	}
+		0,
+		$elm$core$String$toInt(
+			A2($elm$core$String$filter, $elm$core$Char$isDigit, line)));
+	var isMultiply = A2($elm$core$String$contains, '*', line);
+	var isAdd = A2($elm$core$String$contains, '+', line);
+	return isAdd ? A3($elm$core$Debug$log, 'IS +', $author$project$Day11$Main$Add, nr) : (isMultiply ? ((!nr) ? $author$project$Day11$Main$MultiplySelf : $author$project$Day11$Main$Multiply(nr)) : A2($elm$core$Debug$log, 'NOTHING WHAT!', $author$project$Day11$Main$MultiplySelf));
 };
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
@@ -11391,23 +11292,18 @@ var $author$project$Day11$Main$makeMonkey = F2(
 				',',
 				A2($author$project$Day11$Main$getLine, lines, 1)));
 		var ifTrue = A2(
-			$elm$core$Maybe$withDefault,
-			0,
-			$elm$core$String$toInt(
-				A2(
-					$elm$core$String$filter,
-					$elm$core$Char$isDigit,
-					A2($author$project$Day11$Main$getLine, lines, 4))));
+			$elm$core$String$filter,
+			$elm$core$Char$isDigit,
+			A2($author$project$Day11$Main$getLine, lines, 4));
 		var ifFalse = A2(
-			$elm$core$Maybe$withDefault,
-			0,
-			$elm$core$String$toInt(
-				A2(
-					$elm$core$String$filter,
-					$elm$core$Char$isDigit,
-					A2($author$project$Day11$Main$getLine, lines, 5))));
-		var monkey = A5($author$project$Day11$Main$Monkey, items, op, test, ifTrue, ifFalse);
-		return A3($elm$core$Dict$insert, monkeyNr, monkey, dict);
+			$elm$core$String$filter,
+			$elm$core$Char$isDigit,
+			A2($author$project$Day11$Main$getLine, lines, 5));
+		var monkey = A7($author$project$Day11$Main$Monkey, monkeyNr, items, 0, op, test, ifTrue, ifFalse);
+		return A2(
+			$elm$core$Debug$log,
+			'insert monkey: ',
+			A3($elm$core$Dict$insert, monkeyNr, monkey, dict));
 	});
 var $author$project$Day11$Main$makeMonkeys = F2(
 	function (dict, lines) {
@@ -11427,13 +11323,123 @@ var $author$project$Day11$Main$makeMonkeys = F2(
 			}
 		}
 	});
+var $author$project$Day11$Main$updateWorry = F2(
+	function (item, monkey) {
+		var level = function () {
+			var _v0 = monkey.operation;
+			switch (_v0.$) {
+				case 'Add':
+					var x = _v0.a;
+					return item + x;
+				case 'Multiply':
+					var x = _v0.a;
+					return item * x;
+				default:
+					return item * item;
+			}
+		}();
+		var remainder = level % monkey.test;
+		return (!remainder) ? _Utils_Tuple2(monkey.ifTrue, item + remainder) : _Utils_Tuple2(monkey.ifFalse, item + remainder);
+	});
+var $author$project$Day11$Main$updateMonkey = F3(
+	function (item, monkey, monkeys) {
+		var _v0 = A2($author$project$Day11$Main$updateWorry, item, monkey);
+		var newKey = _v0.a;
+		var newLevel = _v0.b;
+		var other = A2($elm$core$Dict$get, newKey, monkeys);
+		if (other.$ === 'Just') {
+			var a = other.a;
+			var valM = _Utils_update(
+				a,
+				{
+					items: _Utils_ap(
+						a.items,
+						_List_fromArray(
+							[newLevel]))
+				});
+			return A3($elm$core$Dict$insert, newKey, valM, monkeys);
+		} else {
+			return monkeys;
+		}
+	});
+var $author$project$Day11$Main$processMonkey = F3(
+	function (current, monkey, monkeys) {
+		processMonkey:
+		while (true) {
+			var items = monkey.items;
+			if (items.b) {
+				var f = items.a;
+				var r = items.b;
+				var newItems = _Utils_update(
+					monkey,
+					{inspectCount: monkey.inspectCount + 1, items: r});
+				var uMonkeys = A3($elm$core$Dict$insert, current, newItems, monkeys);
+				var updatedMonkeys = A3($author$project$Day11$Main$updateMonkey, f, newItems, uMonkeys);
+				var $temp$current = current,
+					$temp$monkey = newItems,
+					$temp$monkeys = updatedMonkeys;
+				current = $temp$current;
+				monkey = $temp$monkey;
+				monkeys = $temp$monkeys;
+				continue processMonkey;
+			} else {
+				return monkeys;
+			}
+		}
+	});
+var $author$project$Day11$Main$playRound = F2(
+	function (monkeys, keys) {
+		playRound:
+		while (true) {
+			if (keys.b) {
+				var first = keys.a;
+				var rest = keys.b;
+				var monkey = A2($elm$core$Dict$get, first, monkeys);
+				if (monkey.$ === 'Just') {
+					var monk = monkey.a;
+					var $temp$monkeys = A3($author$project$Day11$Main$processMonkey, first, monk, monkeys),
+						$temp$keys = rest;
+					monkeys = $temp$monkeys;
+					keys = $temp$keys;
+					continue playRound;
+				} else {
+					return A2($elm$core$Debug$log, 'Something is wrong! ', monkeys);
+				}
+			} else {
+				return monkeys;
+			}
+		}
+	});
+var $author$project$Day11$Main$playKeepAway = F2(
+	function (monkeys, r) {
+		playKeepAway:
+		while (true) {
+			var newRound = r + 1;
+			var keys = $elm$core$Dict$keys(monkeys);
+			if (newRound < 21) {
+				var $temp$monkeys = A2(
+					$elm$core$Debug$log,
+					'after round: ',
+					A2($author$project$Day11$Main$playRound, monkeys, keys)),
+					$temp$r = newRound;
+				monkeys = $temp$monkeys;
+				r = $temp$r;
+				continue playKeepAway;
+			} else {
+				return monkeys;
+			}
+		}
+	});
 var $author$project$Day11$Main$processInput = function (string) {
-	var lines = A2($elm$core$String$split, '/n/n', string);
+	var lines = A2($elm$core$String$split, '\n\n', string);
 	var monkeys = A2(
 		$elm$core$Debug$log,
 		'monkeys: ',
 		A2($author$project$Day11$Main$makeMonkeys, $elm$core$Dict$empty, lines));
-	return 0;
+	return A2(
+		$elm$core$Debug$log,
+		'after play ',
+		A2($author$project$Day11$Main$playKeepAway, monkeys, 0));
 };
 var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 	return {$: 'Text', a: a};
@@ -11453,7 +11459,8 @@ var $author$project$Day11$Main$part1 = function (input) {
 			_List_Nil,
 			$mdgriffith$elm_ui$Element$text(
 				$elm$core$String$fromInt(
-					$author$project$Day11$Main$processInput(input))))
+					$author$project$Day11$Main$highestInspectCount(
+						$author$project$Day11$Main$processInput(input)))))
 		]);
 };
 var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
